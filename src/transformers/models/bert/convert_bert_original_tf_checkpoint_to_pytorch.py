@@ -19,7 +19,7 @@ import argparse
 
 import torch
 
-from transformers import BertConfig, BertForPreTraining, load_tf_weights_in_bert
+from transformers import BertConfig, BertForPreTraining, load_tf_weights_in_bert, BertForSequenceClassification
 from transformers.utils import logging
 
 
@@ -29,8 +29,11 @@ logging.set_verbosity_info()
 def convert_tf_checkpoint_to_pytorch(tf_checkpoint_path, bert_config_file, pytorch_dump_path):
     # Initialise PyTorch model
     config = BertConfig.from_json_file(bert_config_file)
-    print(f"Building PyTorch model from configuration: {config}")
-    model = BertForPreTraining(config)
+#     print(f"Building PyTorch model from configuration: {config}")
+#     model = BertForPreTraining(config)
+    config.num_labels = 2
+    print("Building PyTorch model from configuration: {}".format(str(config)))
+    model = BertForSequenceClassification(config)
 
     # Load weights from tf checkpoint
     load_tf_weights_in_bert(model, config, tf_checkpoint_path)
